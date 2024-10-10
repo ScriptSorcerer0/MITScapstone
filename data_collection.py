@@ -40,19 +40,14 @@ def collect_existing_industry_data():
     tasks_to_dwa_df = load_onet_csv("Tasks to DWAs.txt")
     dwa_reference_df = load_onet_csv("DWA Reference.txt")
 
-    # Merge tasks with DWAs, and DWAs with their reference information
     tasks_with_dwa = pd.merge(tasks_to_dwa_df, dwa_reference_df, on="DWA ID", how="inner")
 
-    # Merge the resulting DWAs with skills using SOC code
     industry_data = pd.merge(skills_df, tasks_with_dwa, on='O*NET-SOC Code', how='inner')
 
-    # Adjust the column selection based on the available columns in the merged data
     industry_data = industry_data[['O*NET-SOC Code', 'Element Name', 'DWA Title', 'Task ID']]
 
-    # Renaming the columns
     industry_data.columns = ['SOC Code', 'Skills', 'DWA Title', 'Task ID']
 
-    # Trim to 6-digit SOC Code
     industry_data['SOC Code'] = industry_data['SOC Code'].str[:6]
 
     return industry_data
